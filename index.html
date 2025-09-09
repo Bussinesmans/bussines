@@ -1,4 +1,3 @@
-```jsx
 import React, { useState } from 'react';
 
 const App = () => {
@@ -12,59 +11,60 @@ const App = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Real before/after images from free stock photo sites
   const galleryImages = [
     {
-      before: 'https://placehold.co/600x400/ff6b6b/ffffff?text=До+Покраски',
-      after: 'https://placehold.co/600x400/4ecdc4/ffffff?text=После+Покраски',
-      title: 'Покраска'
+      before: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Painting'
     },
     {
-      before: 'https://placehold.co/600x400/45b7d1/ffffff?text=До+Демонтажа',
-      after: 'https://placehold.co/600x400/96ceb4/ffffff?text=После+Демонтажа',
-      title: 'Демонтаж'
+      before: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1583847268964-d05f534225d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Demolition'
     },
     {
-      before: 'https://placehold.co/600x400/feca57/ffffff?text=До+Укладки+Плитки',
-      after: 'https://placehold.co/600x400/ff9ff3/ffffff?text=После+Укладки+Плитки',
-      title: 'Укладка плитки'
+      before: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1617804900364-32899b2120f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Tile Installation'
     },
     {
-      before: 'https://placehold.co/600x400/54a0ff/ffffff?text=До+Подготовки',
-      after: 'https://placehold.co/600x400/5f27cd/ffffff?text=После+Подготовки',
-      title: 'Подготовка поверхностей'
+      before: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Surface Preparation'
     },
     {
-      before: 'https://placehold.co/600x400/f368e0/ffffff?text=До+Ремонта',
-      after: 'https://placehold.co/600x400/ff9f43/ffffff?text=После+Ремонта',
-      title: 'Ремонт помещений'
+      before: 'https://images.unsplash.com/photo-1583847268964-d05f534225d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Room Renovation'
     },
     {
-      before: 'https://placehold.co/600x400/ee5a24/ffffff?text=До+Малярных+Работ',
-      after: 'https://placehold.co/600x400/00d2d3/ffffff?text=После+Малярных+Работ',
-      title: 'Малярные работы'
+      before: 'https://images.unsplash.com/photo-1617804900364-32899b2120f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      after: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80',
+      title: 'Painting Work'
     }
   ];
 
   const services = [
-    'Покраска',
-    'Демонтаж',
-    'Укладка плитки',
-    'Подготовка поверхностей',
-    'Ремонт помещений',
-    'Малярные работы',
-    'Черновые работы',
-    'Чистовая отделка',
-    'Сборка мебели',
-    'Разнорабочий'
+    'Painting',
+    'Demolition',
+    'Tile Installation',
+    'Surface Preparation',
+    'Room Renovation',
+    'Painting Work',
+    'Rough Work',
+    'Finishing Work',
+    'Furniture Assembly',
+    'Handyman Services'
   ];
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Введите имя клиента';
-    if (!formData.task.trim()) newErrors.task = 'Выберите задание';
-    if (!formData.date) newErrors.date = 'Выберите дату';
-    if (!formData.time) newErrors.time = 'Выберите время';
-    if (!formData.address.trim()) newErrors.address = 'Введите адрес';
+    if (!formData.name.trim()) newErrors.name = 'Please enter client name';
+    if (!formData.task.trim()) newErrors.task = 'Please select a task';
+    if (!formData.date) newErrors.date = 'Please select a date';
+    if (!formData.time) newErrors.time = 'Please select a time';
+    if (!formData.address.trim()) newErrors.address = 'Please enter address';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -121,13 +121,13 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <h1 className="ml-3 text-2xl font-bold text-gray-900">Zulfat Business</h1>
+              <h1 className="ml-3 text-2xl font-bold text-gray-900">EM HANDYMEN SOLUTIONS</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#home" className="text-gray-700 hover:text-blue-600 transition-colors">Главная</a>
-              <a href="#services" className="text-gray-700 hover:text-blue-600 transition-colors">Услуги</a>
-              <a href="#gallery" className="text-gray-700 hover:text-blue-600 transition-colors">Галерея</a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors">Заявка</a>
+              <a href="#home" className="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
+              <a href="#services" className="text-gray-700 hover:text-blue-600 transition-colors">Services</a>
+              <a href="#gallery" className="text-gray-700 hover:text-blue-600 transition-colors">Gallery</a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors">Request</a>
             </nav>
           </div>
         </div>
@@ -136,14 +136,14 @@ const App = () => {
       {/* Hero Section */}
       <section id="home" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">Профессиональные разнорабочие для вашего проекта</h2>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Качественные услуги по ремонту и отделке помещений. Быстро, надежно, по доступным ценам.</p>
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">Professional Handyman Services for Your Project</h2>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Quality repair and finishing services. Fast, reliable, and affordable.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="#contact" className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg">
-              Оставить заявку
+              Request Service
             </a>
             <a href="#gallery" className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors">
-              Посмотреть работы
+              View Our Work
             </a>
           </div>
         </div>
@@ -153,8 +153,8 @@ const App = () => {
       <section id="services" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Наши услуги</h3>
-            <p className="text-xl text-gray-600">Широкий спектр услуг для решения любых задач по ремонту и отделке</p>
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Services</h3>
+            <p className="text-xl text-gray-600">A wide range of services to solve any repair and finishing tasks</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -167,7 +167,7 @@ const App = () => {
                   </svg>
                 </div>
                 <h4 className="text-xl font-semibold text-gray-900 mb-3">{service}</h4>
-                <p className="text-gray-600">Профессиональное выполнение работ с гарантией качества. Используем современные материалы и технологии.</p>
+                <p className="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
               </div>
             ))}
           </div>
@@ -178,8 +178,8 @@ const App = () => {
       <section id="gallery" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Наши работы</h3>
-            <p className="text-xl text-gray-600">До и после - видимый результат нашей работы</p>
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Work</h3>
+            <p className="text-xl text-gray-600">Before and After - Visible results of our work</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -190,18 +190,18 @@ const App = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">До:</p>
+                      <p className="text-sm font-medium text-gray-700 mb-2">Before:</p>
                       <img 
                         src={item.before} 
-                        alt={`До ${item.title}`}
+                        alt={`Before ${item.title}`}
                         className="w-full h-48 object-cover rounded-lg"
                       />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">После:</p>
+                      <p className="text-sm font-medium text-gray-700 mb-2">After:</p>
                       <img 
                         src={item.after} 
-                        alt={`После ${item.title}`}
+                        alt={`After ${item.title}`}
                         className="w-full h-48 object-cover rounded-lg"
                       />
                     </div>
@@ -217,8 +217,8 @@ const App = () => {
       <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Оставить заявку</h3>
-            <p className="text-xl text-gray-600">Заполните форму и наш специалист свяжется с вами в ближайшее время</p>
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Submit a Request</h3>
+            <p className="text-xl text-gray-600">Fill out the form and our specialist will contact you shortly</p>
           </div>
           
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
@@ -229,14 +229,14 @@ const App = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h4 className="text-2xl font-bold text-gray-900 mb-2">Заявка отправлена!</h4>
-                <p className="text-gray-600">Наш менеджер свяжется с вами в ближайшее время.</p>
+                <h4 className="text-2xl font-bold text-gray-900 mb-2">Request Submitted!</h4>
+                <p className="text-gray-600">Our manager will contact you shortly.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Имя клиента *
+                    Client Name *
                   </label>
                   <input
                     type="text"
@@ -247,14 +247,14 @@ const App = () => {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Введите ваше имя"
+                    placeholder="Enter your name"
                   />
                   {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                 </div>
                 
                 <div>
                   <label htmlFor="task" className="block text-sm font-medium text-gray-700 mb-2">
-                    Задание для разнорабочего *
+                    Task for Handyman *
                   </label>
                   <select
                     id="task"
@@ -265,7 +265,7 @@ const App = () => {
                       errors.task ? 'border-red-500' : 'border-gray-300'
                     }`}
                   >
-                    <option value="">Выберите задание</option>
+                    <option value="">Select a task</option>
                     {services.map((service, index) => (
                       <option key={index} value={service}>{service}</option>
                     ))}
@@ -276,7 +276,7 @@ const App = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
-                      Дата приезда *
+                      Arrival Date *
                     </label>
                     <input
                       type="date"
@@ -293,7 +293,7 @@ const App = () => {
                   
                   <div>
                     <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-2">
-                      Время приезда *
+                      Arrival Time *
                     </label>
                     <input
                       type="time"
@@ -311,7 +311,7 @@ const App = () => {
                 
                 <div>
                   <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-                    Адрес объекта *
+                    Property Address *
                   </label>
                   <input
                     type="text"
@@ -322,7 +322,7 @@ const App = () => {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.address ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Укажите полный адрес"
+                    placeholder="Enter full address"
                   />
                   {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
                 </div>
@@ -332,10 +332,10 @@ const App = () => {
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-colors shadow-lg"
                   >
-                    Отправить заявку
+                    Submit Request
                   </button>
                   <p className="text-sm text-gray-500 mt-4 text-center">
-                    Заявка будет отправлена на zulfatbussines@outlook.com
+                    Request will be sent to zulfatbussines@outlook.com
                   </p>
                 </div>
               </form>
@@ -355,24 +355,24 @@ const App = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <h3 className="ml-3 text-xl font-bold">Zulfat Business</h3>
+                <h3 className="ml-3 text-xl font-bold">EM HANDYMEN SOLUTIONS</h3>
               </div>
               <p className="text-gray-400">
-                Профессиональные услуги разнорабочих для ваших проектов. Качество, надежность и доступные цены.
+                Professional handyman services for your projects. Quality, reliability, and affordable prices.
               </p>
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4">Контакты</h4>
+              <h4 className="text-lg font-semibold mb-4">Contact</h4>
               <div className="space-y-2 text-gray-400">
                 <p>📧 zulfatbussines@outlook.com</p>
                 <p>📞 +7 (XXX) XXX-XX-XX</p>
-                <p>🕒 Ежедневно с 9:00 до 18:00</p>
+                <p>🕒 Daily from 9:00 AM to 6:00 PM</p>
               </div>
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4">Услуги</h4>
+              <h4 className="text-lg font-semibold mb-4">Services</h4>
               <ul className="space-y-2 text-gray-400">
                 {services.slice(0, 5).map((service, index) => (
                   <li key={index}>• {service}</li>
@@ -382,7 +382,7 @@ const App = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Zulfat Business. Все права защищены.</p>
+            <p>&copy; {new Date().getFullYear()} EM HANDYMEN SOLUTIONS. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -391,4 +391,3 @@ const App = () => {
 };
 
 export default App;
-```
