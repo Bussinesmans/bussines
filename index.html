@@ -1,612 +1,392 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EM HANDYMEN SOLUTIONS - Найм разнорабочих</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #3498db;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-        }
-        
-        body {
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header */
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            color: var(--secondary);
-            margin-right: 10px;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 2rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-        
-        .nav-links a:hover {
-            color: var(--secondary);
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1581578021517-5d8ad8597858?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 6rem 0;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-        }
-        
-        /* Services */
-        .services {
-            padding: 5rem 0;
-            background: white;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
-        .section-title p {
-            color: #666;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .service-card {
-            background: var(--light);
-            padding: 2rem;
-            border-radius: 8px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .service-card:hover {
-            transform: translateY(-10px);
-        }
-        
-        .service-card i {
-            font-size: 3rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-        
-        .service-card h3 {
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-        
-        /* How it works */
-        .how-it-works {
-            padding: 5rem 0;
-            background: #f5f5f5;
-        }
-        
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .step {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .step-number {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            line-height: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-        
-        /* Request Form */
-        .request-form {
-            padding: 5rem 0;
-            background: white;
-        }
-        
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--light);
-            padding: 3rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        /* Testimonials */
-        .testimonials {
-            padding: 5rem 0;
-            background: #f5f5f5;
-        }
-        
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .testimonial {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .testimonial p {
-            font-style: italic;
-            margin-bottom: 1rem;
-        }
-        
-        .client {
-            display: flex;
-            align-items: center;
-        }
-        
-        .client img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 1rem;
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 0 1rem;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-        
-        .footer-section p, .footer-section li {
-            margin-bottom: 0.5rem;
-            opacity: 0.8;
-        }
-        
-        .footer-section a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
-            color: var(--secondary);
-        }
-        
-        .social-icons a {
-            display: inline-block;
-            margin-right: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .form-container {
-                padding: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <i class="fas fa-tools"></i>
-                    EM HANDYMEN SOLUTIONS
-                </div>
-                <ul class="nav-links">
-                    <li><a href="#services">Услуги</a></li>
-                    <li><a href="#how-it-works">Как это работает</a></li>
-                    <li><a href="#request">Оставить заявку</a></li>
-                    <li><a href="#contact">Контакты</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+import React, { useState } from 'react';
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Найдите проверенных разнорабочих для любых задач</h1>
-            <p>EM HANDYMEN SOLUTIONS соединяет клиентов с квалифицированными специалистами для выполнения различных работ по дому, офису и не только</p>
-            <a href="#request" class="btn">Оставить заявку</a>
-        </div>
-    </section>
+const App = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    task: '',
+    date: '',
+    time: '',
+    address: ''
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
 
-    <!-- Services -->
-    <section class="services" id="services">
-        <div class="container">
-            <div class="section-title">
-                <h2>Наши услуги</h2>
-                <p>Мы предоставляем широкий спектр услуг по найму разнорабочих для различных задач</p>
-            </div>
-            
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-hammer"></i>
-                    <h3>Ремонтные работы</h3>
-                    <p>Мелкий и средний ремонт квартир, офисов, домов</p>
-                </div>
-                
-                <div class="service-card">
-                    <i class="fas fa-paint-roller"></i>
-                    <h3>Отделочные работы</h3>
-                    <p>Покраска, штукатурка, поклейка обоев и другие отделочные работы</p>
-                </div>
-                
-                <div class="service-card">
-                    <i class="fas fa-toolbox"></i>
-                    <h3>Сборка мебели</h3>
-                    <p>Профессиональная сборка любой мебели от опытных специалистов</p>
-                </div>
-                
-                <div class="service-card">
-                    <i class="fas fa-truck-moving"></i>
-                    <h3>Грузоперевозки</h3>
-                    <p>Помощь с переездом, транспортировкой мебели и других грузов</p>
-                </div>
-                
-                <div class="service-card">
-                    <i class="fas fa-tree"></i>
-                    <h3>Работы на участке</h3>
-                    <p>Уход за садом, уборка территории, мелкие наружные работы</p>
-                </div>
-                
-                <div class="service-card">
-                    <i class="fas fa-wrench"></i>
-                    <h3>Сантехника и электрика</h3>
-                    <p>Квалифицированные мастера для решения проблем с сантехникой и электрикой</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  const galleryImages = [
+    {
+      before: 'https://placehold.co/600x400/ff6b6b/ffffff?text=До+Покраски',
+      after: 'https://placehold.co/600x400/4ecdc4/ffffff?text=После+Покраски',
+      title: 'Покраска'
+    },
+    {
+      before: 'https://placehold.co/600x400/45b7d1/ffffff?text=До+Демонтажа',
+      after: 'https://placehold.co/600x400/96ceb4/ffffff?text=После+Демонтажа',
+      title: 'Демонтаж'
+    },
+    {
+      before: 'https://placehold.co/600x400/feca57/ffffff?text=До+Укладки+Плитки',
+      after: 'https://placehold.co/600x400/ff9ff3/ffffff?text=После+Укладки+Плитки',
+      title: 'Укладка плитки'
+    },
+    {
+      before: 'https://placehold.co/600x400/54a0ff/ffffff?text=До+Подготовки',
+      after: 'https://placehold.co/600x400/5f27cd/ffffff?text=После+Подготовки',
+      title: 'Подготовка поверхностей'
+    },
+    {
+      before: 'https://placehold.co/600x400/f368e0/ffffff?text=До+Ремонта',
+      after: 'https://placehold.co/600x400/ff9f43/ffffff?text=После+Ремонта',
+      title: 'Ремонт помещений'
+    },
+    {
+      before: 'https://placehold.co/600x400/ee5a24/ffffff?text=До+Малярных+Работ',
+      after: 'https://placehold.co/600x400/00d2d3/ffffff?text=После+Малярных+Работ',
+      title: 'Малярные работы'
+    }
+  ];
 
-    <!-- How it works -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-title">
-                <h2>Как это работает</h2>
-                <p>Всего 4 простых шага чтобы найти подходящего разнорабочего</p>
-            </div>
-            
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Оставьте заявку</h3>
-                    <p>Заполните форму на сайте с описанием задачи</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Подбор кандидатов</h3>
-                    <p>Мы подберем подходящих специалистов под ваши требования</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Согласование деталей</h3>
-                    <p>Обсудите детали работы напрямую с исполнителем</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Выполнение работы</h3>
-                    <p>Специалист выполняет работу, вы принимаете и оплачиваете</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  const services = [
+    'Покраска',
+    'Демонтаж',
+    'Укладка плитки',
+    'Подготовка поверхностей',
+    'Ремонт помещений',
+    'Малярные работы',
+    'Черновые работы',
+    'Чистовая отделка',
+    'Сборка мебели',
+    'Разнорабочий'
+  ];
 
-    <!-- Request Form -->
-    <section class="request-form" id="request">
-        <div class="container">
-            <div class="section-title">
-                <h2>Оставить заявку</h2>
-                <p>Заполните форму и мы найдем для вас подходящего специалиста в кратчайшие сроки</p>
-            </div>
-            
-            <div class="form-container">
-                <form id="requestForm">
-                    <div class="form-group">
-                        <label for="name">Ваше имя</label>
-                        <input type="text" id="name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Телефон</label>
-                        <input type="tel" id="phone" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service">Тип услуги</label>
-                        <select id="service" required>
-                            <option value="">Выберите услугу</option>
-                            <option value="repair">Ремонтные работы</option>
-                            <option value="finishing">Отделочные работы</option>
-                            <option value="furniture">Сборка мебели</option>
-                            <option value="transport">Грузоперевозки</option>
-                            <option value="garden">Работы на участке</option>
-                            <option value="plumbing">Сантехника и электрика</option>
-                            <option value="other">Другое</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="date">Желаемая дата выполнения</label>
-                        <input type="date" id="date">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="description">Описание задачи</label>
-                        <textarea id="description" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn">Отправить заявку</button>
-                </form>
-            </div>
-        </div>
-    </section>
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Введите имя клиента';
+    if (!formData.task.trim()) newErrors.task = 'Выберите задание';
+    if (!formData.date) newErrors.date = 'Выберите дату';
+    if (!formData.time) newErrors.time = 'Выберите время';
+    if (!formData.address.trim()) newErrors.address = 'Введите адрес';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-title">
-                <h2>Отзывы клиентов</h2>
-                <p>Что говорят наши клиенты о работе с нами</p>
-            </div>
-            
-            <div class="testimonials-grid">
-                <div class="testimonial">
-                    <p>"Нашел отличного специалиста для ремонта ванной комнаты. Работа была выполнена качественно и в срок. Спасибо EM HANDYMEN SOLUTIONS!"</p>
-                    <div class="client">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client">
-                        <div>
-                            <h4>Андрей Иванов</h4>
-                            <span>Москва</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <p>"Пользовался услугами несколько раз для разных задач. Всегда быстро подбирали подходящего мастера. Цены адекватные, качество работы на высоте."</p>
-                    <div class="client">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client">
-                        <div>
-                            <h4>Елена Петрова</h4>
-                            <span>Санкт-Петербург</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <p>"Нужно было срочно собрать несколько единиц мебели. Оставил заявку утром, к вечеру всё было готово. Очень доволен сервисом!"</p>
-                    <div class="client">
-                        <img src="https://randomuser.me/api/portraits/men/62.jpg" alt="Client">
-                        <div>
-                            <h4>Дмитрий Соколов</h4>
-                            <span>Казань</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>EM HANDYMEN SOLUTIONS</h3>
-                    <p>Мы помогаем найти проверенных разнорабочих для выполнения различных задач любой сложности.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Контакты</h3>
-                    <p><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
-                    <p><i class="fas fa-envelope"></i> info@emhandymen.ru</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, д. 10</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Быстрые ссылки</h3>
-                    <ul>
-                        <li><a href="#services">Услуги</a></li>
-                        <li><a href="#how-it-works">Как это работает</a></li>
-                        <li><a href="#request">Оставить заявку</a></li>
-                        <li><a href="#contact">Контакты</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Социальные сети</h3>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-vk"></i></a>
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                <p>&copy; 2023 EM HANDYMEN SOLUTIONS. Все права защищены.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Обработка формы
-        document.getElementById('requestForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Спасибо! Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.');
-            this.reset();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      // In a real app, you would send this to a server that would email it
+      // Since we can't send emails directly from frontend, we'll just show success message
+      console.log('Form submitted:', formData);
+      setIsSubmitted(true);
+      
+      // Reset form after submission
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          task: '',
+          date: '',
+          time: '',
+          address: ''
         });
-    </script>
-</body>
-</html>
+        setIsSubmitted(false);
+      }, 3000);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header */}
+      <header className="bg-white shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <h1 className="ml-3 text-2xl font-bold text-gray-900">Zulfat Business</h1>
+            </div>
+            <nav className="hidden md:flex space-x-8">
+              <a href="#home" className="text-gray-700 hover:text-blue-600 transition-colors">Главная</a>
+              <a href="#services" className="text-gray-700 hover:text-blue-600 transition-colors">Услуги</a>
+              <a href="#gallery" className="text-gray-700 hover:text-blue-600 transition-colors">Галерея</a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors">Заявка</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section id="home" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">Профессиональные разнорабочие для вашего проекта</h2>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Качественные услуги по ремонту и отделке помещений. Быстро, надежно, по доступным ценам.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#contact" className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg">
+              Оставить заявку
+            </a>
+            <a href="#gallery" className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors">
+              Посмотреть работы
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Наши услуги</h3>
+            <p className="text-xl text-gray-600">Широкий спектр услуг для решения любых задач по ремонту и отделке</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-3">{service}</h4>
+                <p className="text-gray-600">Профессиональное выполнение работ с гарантией качества. Используем современные материалы и технологии.</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Наши работы</h3>
+            <p className="text-xl text-gray-600">До и после - видимый результат нашей работы</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {galleryImages.map((item, index) => (
+              <div key={index} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <div className="p-6">
+                  <h4 className="text-xl font-semibold text-gray-900 mb-4 text-center">{item.title}</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 mb-2">До:</p>
+                      <img 
+                        src={item.before} 
+                        alt={`До ${item.title}`}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 mb-2">После:</p>
+                      <img 
+                        src={item.after} 
+                        alt={`После ${item.title}`}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Оставить заявку</h3>
+            <p className="text-xl text-gray-600">Заполните форму и наш специалист свяжется с вами в ближайшее время</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+            {isSubmitted ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-2">Заявка отправлена!</h4>
+                <p className="text-gray-600">Наш менеджер свяжется с вами в ближайшее время.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Имя клиента *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.name ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Введите ваше имя"
+                  />
+                  {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                </div>
+                
+                <div>
+                  <label htmlFor="task" className="block text-sm font-medium text-gray-700 mb-2">
+                    Задание для разнорабочего *
+                  </label>
+                  <select
+                    id="task"
+                    name="task"
+                    value={formData.task}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.task ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  >
+                    <option value="">Выберите задание</option>
+                    {services.map((service, index) => (
+                      <option key={index} value={service}>{service}</option>
+                    ))}
+                  </select>
+                  {errors.task && <p className="mt-1 text-sm text-red-600">{errors.task}</p>}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+                      Дата приезда *
+                    </label>
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.date ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Время приезда *
+                    </label>
+                    <input
+                      type="time"
+                      id="time"
+                      name="time"
+                      value={formData.time}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.time ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {errors.time && <p className="mt-1 text-sm text-red-600">{errors.time}</p>}
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                    Адрес объекта *
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.address ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Укажите полный адрес"
+                  />
+                  {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+                </div>
+                
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-colors shadow-lg"
+                  >
+                    Отправить заявку
+                  </button>
+                  <p className="text-sm text-gray-500 mt-4 text-center">
+                    Заявка будет отправлена на zulfatbussines@outlook.com
+                  </p>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <h3 className="ml-3 text-xl font-bold">Zulfat Business</h3>
+              </div>
+              <p className="text-gray-400">
+                Профессиональные услуги разнорабочих для ваших проектов. Качество, надежность и доступные цены.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Контакты</h4>
+              <div className="space-y-2 text-gray-400">
+                <p>📧 zulfatbussines@outlook.com</p>
+                <p>📞 +7 (XXX) XXX-XX-XX</p>
+                <p>🕒 Ежедневно с 9:00 до 18:00</p>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Услуги</h4>
+              <ul className="space-y-2 text-gray-400">
+                {services.slice(0, 5).map((service, index) => (
+                  <li key={index}>• {service}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; {new Date().getFullYear()} Zulfat Business. Все права защищены.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
