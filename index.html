@@ -464,24 +464,24 @@
         function displaySingleResults(data) {
             const results = document.getElementById('results');
             
-            // Расчет всей аналитики
-            const videoPercentage = calculateVideoPercentage(data.top_posts);
-            const photoPercentage = calculatePhotoPercentage(data.top_posts);
-            const avgLikes = calculateAvgLikes(data.top_posts);
+            // 🔥 БЕЗОПАСНЫЙ РАСЧЕТ АНАЛИТИКИ
+            const videoPercentage = calculateVideoPercentage(data.top_posts || []);
+            const photoPercentage = calculatePhotoPercentage(data.top_posts || []);
+            const avgLikes = calculateAvgLikes(data.top_posts || []);
             const engagementRate = calculateEngagementRate(data);
-            const bestContentType = getBestContentType(data.top_posts);
-            const topHashtags = getTopHashtags(data.popular_hashtags);
+            const bestContentType = getBestContentType(data.top_posts || []);
+            const topHashtags = getTopHashtags(data.popular_hashtags || []);
             const successScore = calculateSuccessScore(data);
-            const captionAnalysis = analyzeCaptions(data.top_posts);
+            const captionAnalysis = analyzeCaptions(data.top_posts || []);
             
             let html = `
                 <div class="stats">
-                    <h2>📊 @${data.username} <span class="score-badge">${successScore}/10</span></h2>
+                    <h2>📊 ${data.username ? '@' + data.username : 'Аккаунт'} <span class="score-badge">${successScore}/10</span></h2>
                     <p><strong>${data.full_name || ''}</strong></p>
                     <div style="display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap;">
-                        <span>👥 ${data.followers?.toLocaleString() || 'N/A'} подписчиков</span>
-                        <span>📝 ${data.posts_count || 'N/A'} постов</span>
-                        <span>🕒 ${data.analyzed_at}</span>
+                        <span>👥 ${(data.followers || 0).toLocaleString()} подписчиков</span>
+                        <span>📝 ${data.posts_count || 0} постов</span>
+                        <span>🕒 ${data.analyzed_at || new Date().toLocaleString('ru-RU')}</span>
                     </div>
                 </div>
             `;
@@ -531,7 +531,7 @@
             `;
             
             // 🔥 АНАЛИЗ УСПЕШНЫХ ПУБЛИКАЦИЙ
-            const timingAnalysis = analyzePostTiming(data.top_posts);
+            const timingAnalysis = analyzePostTiming(data.top_posts || []);
             html += `
                 <div class="section">
                     <h3 class="section-title">📅 АНАЛИЗ УСПЕШНЫХ ПУБЛИКАЦИЙ</h3>
@@ -598,7 +598,7 @@
                 <div class="section">
                     <h3 class="section-title">💡 РЕКОМЕНДАЦИИ ДЛЯ РОСТА</h3>
                     <div class="post-card">
-                        <strong>На основе анализа ${data.top_posts?.length || 0} успешных постов</strong>
+                        <strong>На основе анализа ${(data.top_posts || []).length} успешных постов</strong>
                         <small style="color: #666; display: block; margin-bottom: 10px;">
                             💡 Персональные советы для увеличения вовлеченности
                         </small>
@@ -614,12 +614,13 @@
             `;
             
             // ТОП ПОСТОВ
-            html += `<div class="section"><h3 class="section-title">🎯 ТОП-${Math.min(5, data.top_posts?.length || 0)} ПОСТОВ ПО ЛАЙКАМ</h3>`;
+            const topPosts = data.top_posts || [];
+            html += `<div class="section"><h3 class="section-title">🎯 ТОП-${Math.min(5, topPosts.length)} ПОСТОВ ПО ЛАЙКАМ</h3>`;
             
-            if (data.top_posts && data.top_posts.length > 0) {
-                data.top_posts.forEach((post, index) => {
+            if (topPosts.length > 0) {
+                topPosts.forEach((post, index) => {
                     const postType = post.is_video ? '🎬 REELS' : '📷 Фото';
-                    const engagement = calculatePostEngagement(post, data.followers);
+                    const engagement = calculatePostEngagement(post, data.followers || 1);
                     
                     html += `
                         <div class="post-card">
@@ -630,10 +631,10 @@
                                 </span>
                             </div>
                             <div style="color: #666; font-size: 14px; margin-bottom: 8px;">
-                                ❤️ ${post.likes?.toLocaleString() || 0} лайков | 💬 ${post.comments || 0} комментов
+                                ❤️ ${(post.likes || 0).toLocaleString()} лайков | 💬 ${post.comments || 0} комментов
                             </div>
                             ${post.caption ? `<p style="margin-top: 8px; color: #555; font-style: italic;">"${post.caption}"</p>` : ''}
-                            <small style="color: #888;">📅 ${post.date}</small>
+                            <small style="color: #888;">📅 ${post.date || 'Дата неизвестна'}</small>
                         </div>
                     `;
                 });
@@ -643,11 +644,12 @@
             html += `</div>`;
             
             // ХЕШТЕГИ
+            const hashtags = data.popular_hashtags || [];
             html += `<div class="section"><h3 class="section-title">🏷️ ПОПУЛЯРНЫЕ ХЕШТЕГИ</h3>`;
             html += `<div class="hashtag-list">`;
             
-            if (data.popular_hashtags && data.popular_hashtags.length > 0) {
-                data.popular_hashtags.forEach(tag => {
+            if (hashtags.length > 0) {
+                hashtags.forEach(tag => {
                     html += `<span class="hashtag">${tag}</span>`;
                 });
             } else {
@@ -665,13 +667,13 @@
         function displayComparisonResults(data1, data2) {
             const results = document.getElementById('results');
             
-            // Расчет аналитики для обоих аккаунтов
+            // 🔥 БЕЗОПАСНЫЙ РАСЧЕТ
             const score1 = calculateSuccessScore(data1);
             const score2 = calculateSuccessScore(data2);
             const engagement1 = calculateEngagementRate(data1);
             const engagement2 = calculateEngagementRate(data2);
-            const avgLikes1 = calculateAvgLikes(data1.top_posts);
-            const avgLikes2 = calculateAvgLikes(data2.top_posts);
+            const avgLikes1 = calculateAvgLikes(data1.top_posts || []);
+            const avgLikes2 = calculateAvgLikes(data2.top_posts || []);
             
             let html = `
                 <div class="section">
@@ -679,22 +681,22 @@
                     
                     <div class="comparison-grid">
                         <div class="account-card">
-                            <h3>@${data1.username} <span class="score-badge">${score1}/10</span></h3>
+                            <h3>@${data1.username || 'аккаунт1'} <span class="score-badge">${score1}/10</span></h3>
                             <p><strong>${data1.full_name || ''}</strong></p>
                             <div style="margin-top: 15px;">
-                                <p>👥 ${data1.followers?.toLocaleString() || 'N/A'} подписчиков</p>
-                                <p>📝 ${data1.posts_count || 'N/A'} постов</p>
+                                <p>👥 ${(data1.followers || 0).toLocaleString()} подписчиков</p>
+                                <p>📝 ${data1.posts_count || 0} постов</p>
                                 <p>❤️ ${avgLikes1} лайков/пост</p>
                                 <p>📈 ${engagement1}% вовлеченность</p>
                             </div>
                         </div>
                         
                         <div class="account-card">
-                            <h3>@${data2.username} <span class="score-badge">${score2}/10</span></h3>
+                            <h3>@${data2.username || 'аккаунт2'} <span class="score-badge">${score2}/10</span></h3>
                             <p><strong>${data2.full_name || ''}</strong></p>
                             <div style="margin-top: 15px;">
-                                <p>👥 ${data2.followers?.toLocaleString() || 'N/A'} подписчиков</p>
-                                <p>📝 ${data2.posts_count || 'N/A'} постов</p>
+                                <p>👥 ${(data2.followers || 0).toLocaleString()} подписчиков</p>
+                                <p>📝 ${data2.posts_count || 0} постов</p>
                                 <p>❤️ ${avgLikes2} лайков/пост</p>
                                 <p>📈 ${engagement2}% вовлеченность</p>
                             </div>
@@ -725,7 +727,7 @@
             results.innerHTML = html;
         }
 
-        // 🔥 ФУНКЦИИ АНАЛИТИКИ
+        // 🔥 ИСПРАВЛЕННЫЕ ФУНКЦИИ АНАЛИТИКИ
         function calculateVideoPercentage(posts) {
             if (!posts || posts.length === 0) return 0;
             const videoPosts = posts.filter(post => post.is_video).length;
@@ -745,10 +747,14 @@
         }
 
         function calculateEngagementRate(data) {
-            if (!data.followers || data.followers === 0 || !data.top_posts) return '0';
-            const totalEngagement = data.top_posts.reduce((sum, post) => sum + (post.likes || 0) + (post.comments || 0), 0);
-            const avgEngagement = totalEngagement / data.top_posts.length;
-            const engagementRate = (avgEngagement / data.followers) * 100;
+            const posts = data.top_posts || [];
+            const followers = data.followers || 1;
+            
+            if (posts.length === 0) return '0';
+            
+            const totalEngagement = posts.reduce((sum, post) => sum + (post.likes || 0) + (post.comments || 0), 0);
+            const avgEngagement = totalEngagement / posts.length;
+            const engagementRate = (avgEngagement / followers) * 100;
             return engagementRate < 0.01 ? engagementRate.toFixed(3) : engagementRate.toFixed(2);
         }
 
@@ -778,16 +784,16 @@
         }
 
         function calculateSuccessScore(data) {
-            if (!data.top_posts || data.top_posts.length === 0) return '0';
+            const posts = data.top_posts || [];
+            if (posts.length === 0) return '0';
             
             const engagementRate = parseFloat(calculateEngagementRate(data)) || 0;
-            const avgLikes = parseFloat(calculateAvgLikes(data.top_posts).replace(/,/g, '')) || 0;
+            const avgLikes = parseFloat(calculateAvgLikes(posts).replace(/,/g, '')) || 0;
             const followers = data.followers || 1;
             
-            // Нормализуем показатели
             const engagementScore = Math.min(engagementRate * 10, 10);
-            const likesScore = Math.min(avgLikes / 10000, 10); // 10K лайков = 10 баллов
-            const followersScore = Math.min(followers / 1000000, 10); // 1M подписчиков = 10 баллов
+            const likesScore = Math.min(avgLikes / 10000, 10);
+            const followersScore = Math.min(followers / 1000000, 10);
             
             const totalScore = (engagementScore * 0.4) + (likesScore * 0.3) + (followersScore * 0.3);
             return Math.min(10, totalScore.toFixed(1));
@@ -815,10 +821,12 @@
                         type === 'engagement' ? parseFloat(calculateEngagementRate(data2)) : 0;
             
             if (type === 'content') {
-                const type1 = getBestContentType(data1.top_posts);
-                const type2 = getBestContentType(data2.top_posts);
+                const type1 = getBestContentType(data1.top_posts || []);
+                const type2 = getBestContentType(data2.top_posts || []);
                 return `@${data1.username} использует ${type1} контент, а @${data2.username} - ${type2}`;
             }
+            
+            if (val2 === 0) return `Недостаточно данных для сравнения`;
             
             const diff = ((val1 - val2) / val2 * 100).toFixed(1);
             if (Math.abs(diff) < 10) return `По ${label} аккаунты примерно равны`;
@@ -845,120 +853,146 @@
             const monthsStats = {};
             const contentByDay = {};
             
-            // 🔥 АНАЛИЗИРУЕМ КАЖДЫЙ ПОСТ
             posts.forEach((post, index) => {
                 if (post.date) {
-                    const date = new Date(post.date);
-                    const day = date.getDay();
-                    const month = date.getMonth();
-                    
-                    const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-                    const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-                    
-                    const dayName = dayNames[day];
-                    const monthName = monthNames[month];
-                    
-                    // 🔥 СЧИТАЕМ СТАТИСТИКУ ПО ДНЯМ НЕДЕЛИ
-                    daysStats[dayName] = (daysStats[dayName] || 0) + 1;
-                    
-                    // 🔥 СЧИТАЕМ СТАТИСТИКУ ПО МЕСЯЦАМ
-                    monthsStats[monthName] = (monthsStats[monthName] || 0) + 1;
-                    
-                    // 🔥 АНАЛИЗИРУЕМ ТИП КОНТЕНТА ДЛЯ КАЖДОГО ДНЯ
-                    if (!contentByDay[dayName]) {
-                        contentByDay[dayName] = { video: 0, photo: 0 };
-                    }
-                    if (post.is_video) {
-                        contentByDay[dayName].video++;
-                    } else {
-                        contentByDay[dayName].photo++;
+                    try {
+                        const date = new Date(post.date);
+                        if (isNaN(date.getTime())) return;
+                        
+                        const day = date.getDay();
+                        const month = date.getMonth();
+                        
+                        const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                        const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+                        
+                        const dayName = dayNames[day];
+                        const monthName = monthNames[month];
+                        
+                        daysStats[dayName] = (daysStats[dayName] || 0) + 1;
+                        monthsStats[monthName] = (monthsStats[monthName] || 0) + 1;
+                        
+                        if (!contentByDay[dayName]) {
+                            contentByDay[dayName] = { video: 0, photo: 0 };
+                        }
+                        if (post.is_video) {
+                            contentByDay[dayName].video++;
+                        } else {
+                            contentByDay[dayName].photo++;
+                        }
+                    } catch (e) {
+                        console.log('Ошибка анализа даты:', e);
                     }
                 }
             });
 
-            // 🔥 ФОРМИРУЕМ СТАТИСТИКУ ПОСТОВ (показывает конкретные даты и результаты)
+            // Формируем статистику постов
             let postsStats = '';
             posts.forEach((post, index) => {
                 if (post.date) {
-                    const date = new Date(post.date);
-                    const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-                    const dayName = dayNames[date.getDay()];
-                    const postType = post.is_video ? 'видео' : 'фото';
-                    
-                    postsStats += `<p>Пост ${index + 1}: ${post.date} (${dayName}) - ${post.likes?.toLocaleString() || 0} лайков | ${postType}</p>`;
+                    try {
+                        const date = new Date(post.date);
+                        const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                        const dayName = dayNames[date.getDay()];
+                        const postType = post.is_video ? 'видео' : 'фото';
+                        
+                        postsStats += `<p>Пост ${index + 1}: ${post.date} (${dayName}) - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
+                    } catch (e) {
+                        postsStats += `<p>Пост ${index + 1}: ${post.date} - ${(post.likes || 0).toLocaleString()} лайков</p>`;
+                    }
+                } else {
+                    postsStats += `<p>Пост ${index + 1}: Дата неизвестна - ${(post.likes || 0).toLocaleString()} лайков</p>`;
                 }
             });
 
-            // 🔥 АНАЛИЗ ДНЕЙ НЕДЕЛИ (сортирует дни по эффективности)
+            // Остальные функции анализа остаются без изменений...
+            // [код функций analyzePostTiming остается тем же, но с безопасными проверками]
+
+            return analyzePostTimingLogic(posts, daysStats, monthsStats, contentByDay, postsStats);
+        }
+
+        function analyzePostTimingLogic(posts, daysStats, monthsStats, contentByDay, postsStats) {
+            // Анализ дней
             let daysAnalysis = '';
-            Object.entries(daysStats)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([day, count]) => {
-                    const percentage = Math.round((count / posts.length) * 100);
-                    daysAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''} (${percentage}%)</p>`;
-                });
+            if (Object.keys(daysStats).length > 0) {
+                Object.entries(daysStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([day, count]) => {
+                        const percentage = Math.round((count / posts.length) * 100);
+                        daysAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''} (${percentage}%)</p>`;
+                    });
+            } else {
+                daysAnalysis = '<p>Не удалось проанализировать дни</p>';
+            }
 
-            // 🔥 АНАЛИЗ МЕСЯЦЕВ (определяет сезонность контента)
+            // Анализ месяцев
             let monthsAnalysis = '';
-            Object.entries(monthsStats)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([month, count]) => {
-                    monthsAnalysis += `<p>${month.charAt(0).toUpperCase() + month.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''}</p>`;
-                });
+            if (Object.keys(monthsStats).length > 0) {
+                Object.entries(monthsStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([month, count]) => {
+                        monthsAnalysis += `<p>${month.charAt(0).toUpperCase() + month.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''}</p>`;
+                    });
+            } else {
+                monthsAnalysis = '<p>Не удалось проанализировать месяцы</p>';
+            }
 
-            // 🔥 АНАЛИЗ ТИПОВ КОНТЕНТА (показывает что работает в разные дни)
+            // Анализ контента по дням
             let contentAnalysis = '';
-            Object.entries(contentByDay).forEach(([day, stats]) => {
-                contentAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${stats.video} видео, ${stats.photo} фото</p>`;
-            });
+            if (Object.keys(contentByDay).length > 0) {
+                Object.entries(contentByDay).forEach(([day, stats]) => {
+                    contentAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${stats.video} видео, ${stats.photo} фото</p>`;
+                });
+            } else {
+                contentAnalysis = '<p>Не удалось проанализировать типы контента</p>';
+            }
 
-            // 🔥 ФОРМИРУЕМ РЕКОМЕНДАЦИИ НА ОСНОВЕ АНАЛИЗА
-            const topDays = Object.entries(daysStats)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 2);
+            // Формируем рекомендации
+            const topDays = Object.entries(daysStats).sort((a, b) => b[1] - a[1]).slice(0, 2);
+            const topMonths = Object.entries(monthsStats).sort((a, b) => b[1] - a[1]).slice(0, 1);
 
-            const topMonths = Object.entries(monthsStats)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 1);
-
-            // 🔥 РЕКОМЕНДАЦИИ ПО ДНЯМ (основаны на статистике успешных постов)
             let daysRecommendation = '<ul>';
-            topDays.forEach(([day, count]) => {
-                const percentage = Math.round((count / posts.length) * 100);
-                const dayContent = contentByDay[day];
-                const mainContentType = dayContent.video > dayContent.photo ? 'видео контент' : 'фото контент';
-                
-                daysRecommendation += `<li>${day.toUpperCase()} - ${percentage}% успешных постов</li>`;
-            });
+            if (topDays.length > 0) {
+                topDays.forEach(([day, count]) => {
+                    const percentage = Math.round((count / posts.length) * 100);
+                    daysRecommendation += `<li>${day.toUpperCase()} - ${percentage}% успешных постов</li>`;
+                });
+            } else {
+                daysRecommendation += '<li>Понедельник и пятница - универсальные дни</li>';
+            }
             daysRecommendation += '</ul>';
 
-            // 🔥 РЕКОМЕНДАЦИИ ПО КОНТЕНТУ (определяет лучший тип контента для каждого дня)
             let contentRecommendation = '<ul>';
-            topDays.forEach(([day]) => {
-                const dayContent = contentByDay[day];
-                const mainContentType = dayContent.video > dayContent.photo ? 'видео контент (Reels)' : 'фото контент';
-                contentRecommendation += `<li>${day.charAt(0).toUpperCase() + day.slice(1)}: ${mainContentType}</li>`;
-            });
+            if (topDays.length > 0) {
+                topDays.forEach(([day]) => {
+                    const dayContent = contentByDay[day] || { video: 0, photo: 0 };
+                    const mainContentType = dayContent.video > dayContent.photo ? 'видео контент (Reels)' : 'фото контент';
+                    contentRecommendation += `<li>${day.charAt(0).toUpperCase() + day.slice(1)}: ${mainContentType}</li>`;
+                });
+            } else {
+                contentRecommendation += '<li>Видео контент: понедельник-пятница</li>';
+            }
             contentRecommendation += '</ul>';
 
-            // 🔥 СЕЗОННЫЕ РЕКОМЕНДАЦИИ (анализирует месяцы для определения трендов)
             let seasonRecommendation = '<ul>';
-            topMonths.forEach(([month, count]) => {
-                seasonRecommendation += `<li>${month.toUpperCase()}: пик виральности</li>`;
-                
-                // 🔥 ДОБАВЛЯЕМ СЕЗОННЫЕ СОВЕТЫ НА ОСНОВЕ МЕСЯЦА
-                if (['март', 'апрель', 'май'].includes(month)) {
-                    seasonRecommendation += `<li>Весна: +45% вовлеченности</li>`;
-                } else if (['июнь', 'июль', 'август'].includes(month)) {
-                    seasonRecommendation += `<li>Лето: путешествия +120%</li>`;
-                } else if (['декабрь', 'январь', 'февраль'].includes(month)) {
-                    seasonRecommendation += `<li>Зима: природа +80%</li>`;
-                }
-            });
+            if (topMonths.length > 0) {
+                topMonths.forEach(([month, count]) => {
+                    seasonRecommendation += `<li>${month.toUpperCase()}: пик виральности</li>`;
+                    
+                    if (['март', 'апрель', 'май'].includes(month)) {
+                        seasonRecommendation += `<li>Весна: +45% вовлеченности</li>`;
+                    } else if (['июнь', 'июль', 'август'].includes(month)) {
+                        seasonRecommendation += `<li>Лето: путешествия +120%</li>`;
+                    } else if (['декабрь', 'январь', 'февраль'].includes(month)) {
+                        seasonRecommendation += `<li>Зима: природа +80%</li>`;
+                    }
+                });
+            } else {
+                seasonRecommendation += '<li>Апрель-май: лучший период для роста</li>';
+            }
             seasonRecommendation += '</ul>';
 
             return {
-                posts_stats: postsStats,
+                posts_stats: postsStats || '<p>Нет данных о постах</p>',
                 days_analysis: daysAnalysis,
                 months_analysis: monthsAnalysis,
                 content_analysis: contentAnalysis,
