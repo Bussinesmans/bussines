@@ -165,19 +165,19 @@
             margin-top: 20px;
         }
 
-        .success {
-            background: #f0fff4;
-            padding: 20px;
-            border-radius: 10px;
-            color: #2d7741;
-            margin-top: 20px;
-        }
-
         .info {
             background: #e3f2fd;
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
@@ -215,7 +215,7 @@
                     <ol style="margin: 10px 0; padding-left: 20px;">
                         <li>Введите username Instagram (например: instagram, natgeo)</li>
                         <li>Нажмите "Анализировать"</li>
-                        <li>Получите топ постов и популярные хештеги</li>
+                        <li>Получите детальную аналитику аккаунта</li>
                     </ol>
                     <p><strong>⚠️ Важно:</strong> Работает только с публичными аккаунтами</p>
                 </div>
@@ -262,6 +262,14 @@
         function displayResults(data) {
             const results = document.getElementById('results');
             
+            // Расчет аналитики
+            const videoPercentage = calculateVideoPercentage(data.top_posts);
+            const photoPercentage = calculatePhotoPercentage(data.top_posts);
+            const avgLikes = calculateAvgLikes(data.top_posts);
+            const engagementRate = calculateEngagementRate(data);
+            const bestContentType = getBestContentType(data.top_posts);
+            const topHashtags = getTopHashtags(data.popular_hashtags);
+            
             let html = `
                 <div class="stats">
                     <h2>📊 @${data.username}</h2>
@@ -274,17 +282,82 @@
                 </div>
             `;
             
-            // Топ постов
-            html += `<div class="section"><h3 class="section-title">🎯 ТОП-5 ПОСТОВ ПО ЛАЙКАМ</h3>`;
+            // 🔥 КЛЮЧЕВЫЕ ИНСАЙТЫ
+            html += `
+                <div class="section">
+                    <h3 class="section-title">💎 КЛЮЧЕВЫЕ ИНСАЙТЫ</h3>
+                    
+                    <div class="insight-card">
+                        <strong>🎯 Формула успеха:</strong>
+                        <p>Аккаунт использует ${videoPercentage}% видео и ${photoPercentage}% фото в топ-постах</p>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <strong>📈 Эффективность контента:</strong>
+                        <p>Средние лайки: ${avgLikes} | Вовлеченность: ${engagementRate}%</p>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <strong>🚀 Рекомендация:</strong>
+                        <p>Создавайте больше ${bestContentType} контента для максимального роста</p>
+                    </div>
+                </div>
+            `;
+            
+            // 🔥 ДЕТАЛЬНАЯ АНАЛИТИКА
+            html += `
+                <div class="section">
+                    <h3 class="section-title">📊 ДЕТАЛЬНАЯ АНАЛИТИКА</h3>
+                    <div class="post-card">
+                        <strong>Статистика успешных постов:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>🎬 Видео/Reels: ${videoPercentage}% успешных постов</li>
+                            <li>📷 Фото: ${photoPercentage}% успешных постов</li>
+                            <li>❤️ Средние лайки: ${avgLikes} на пост</li>
+                            <li>📈 Вовлеченность: ${engagementRate}% (лайки + комментарии)</li>
+                            <li>⭐ Самый успешный тип: ${bestContentType}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // 🔥 РЕКОМЕНДАЦИИ
+            html += `
+                <div class="section">
+                    <h3 class="section-title">💡 РЕКОМЕНДАЦИИ ДЛЯ РОСТА</h3>
+                    <div class="post-card">
+                        <strong>На основе анализа ${data.top_posts?.length || 0} успешных постов:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>✅ Делайте больше <strong>${bestContentType}</strong> контента</li>
+                            <li>✅ Используйте хештеги: <strong>${topHashtags}</strong></li>
+                            <li>✅ Анализируйте описания успешных постов ниже</li>
+                            <li>✅ Сохраняйте стиль, который работает</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // ТОП ПОСТОВ
+            html += `<div class="section"><h3 class="section-title">🎯 ТОП-${Math.min(5, data.top_posts?.length || 0)} ПОСТОВ ПО ЛАЙКАМ</h3>`;
             
             if (data.top_posts && data.top_posts.length > 0) {
                 data.top_posts.forEach((post, index) => {
                     const postType = post.is_video ? '🎬 REELS' : '📷 Фото';
+                    const engagement = calculatePostEngagement(post, data.followers);
+                    
                     html += `
                         <div class="post-card">
-                            <strong>#${index + 1} | ${postType} | ❤️ ${post.likes?.toLocaleString() || 0} лайков | 💬 ${post.comments || 0} комментов</strong>
-                            ${post.caption ? `<p style="margin-top: 8px; color: #555;">${post.caption}</p>` : ''}
-                            <small>📅 ${post.date}</small>
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                                <strong>#${index + 1} | ${postType}</strong>
+                                <span style="background: #667eea; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                                    ${engagement}% вовлеченность
+                                </span>
+                            </div>
+                            <div style="color: #666; font-size: 14px; margin-bottom: 8px;">
+                                ❤️ ${post.likes?.toLocaleString() || 0} лайков | 💬 ${post.comments || 0} комментов
+                            </div>
+                            ${post.caption ? `<p style="margin-top: 8px; color: #555; font-style: italic;">"${post.caption}"</p>` : ''}
+                            <small style="color: #888;">📅 ${post.date}</small>
                         </div>
                     `;
                 });
@@ -293,7 +366,7 @@
             }
             html += `</div>`;
             
-            // Хештеги
+            // ХЕШТЕГИ
             html += `<div class="section"><h3 class="section-title">🏷️ ПОПУЛЯРНЫЕ ХЕШТЕГИ</h3>`;
             html += `<div class="hashtag-list">`;
             
@@ -302,11 +375,67 @@
                     html += `<span class="hashtag">${tag}</span>`;
                 });
             } else {
-                html += `<p>Хештеги не найдены</p>`;
+                html += `<p>Хештеги не найдены в описаниях</p>`;
             }
-            html += `</div></div>`;
+            html += `</div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                    💡 Эти хештеги используются в самых успешных постах аккаунта
+                </p>
+            </div>`;
             
             results.innerHTML = html;
+        }
+
+        // 🔥 ФУНКЦИИ АНАЛИТИКИ
+        function calculateVideoPercentage(posts) {
+            if (!posts || posts.length === 0) return 0;
+            const videoPosts = posts.filter(post => post.is_video).length;
+            return Math.round((videoPosts / posts.length) * 100);
+        }
+
+        function calculatePhotoPercentage(posts) {
+            if (!posts || posts.length === 0) return 0;
+            const photoPosts = posts.filter(post => !post.is_video).length;
+            return Math.round((photoPosts / posts.length) * 100);
+        }
+
+        function calculateAvgLikes(posts) {
+            if (!posts || posts.length === 0) return 0;
+            const totalLikes = posts.reduce((sum, post) => sum + (post.likes || 0), 0);
+            return Math.round(totalLikes / posts.length).toLocaleString();
+        }
+
+        function calculateEngagementRate(data) {
+            if (!data.followers || data.followers === 0 || !data.top_posts) return '0';
+            const totalEngagement = data.top_posts.reduce((sum, post) => sum + (post.likes || 0) + (post.comments || 0), 0);
+            const avgEngagement = totalEngagement / data.top_posts.length;
+            const engagementRate = (avgEngagement / data.followers) * 100;
+            return engagementRate < 0.01 ? engagementRate.toFixed(3) : engagementRate.toFixed(2);
+        }
+
+        function calculatePostEngagement(post, followers) {
+            if (!followers || followers === 0) return '0';
+            const engagement = ((post.likes || 0) + (post.comments || 0)) / followers * 100;
+            return engagement < 0.01 ? engagement.toFixed(3) : engagement.toFixed(2);
+        }
+
+        function getBestContentType(posts) {
+            if (!posts || posts.length === 0) return 'контента';
+            const videoPosts = posts.filter(post => post.is_video);
+            const photoPosts = posts.filter(post => !post.is_video);
+            
+            if (videoPosts.length === 0) return 'фото';
+            if (photoPosts.length === 0) return 'видео';
+            
+            const avgVideoLikes = videoPosts.reduce((sum, post) => sum + (post.likes || 0), 0) / videoPosts.length;
+            const avgPhotoLikes = photoPosts.reduce((sum, post) => sum + (post.likes || 0), 0) / photoPosts.length;
+            
+            return avgVideoLikes > avgPhotoLikes ? 'видео' : 'фото';
+        }
+
+        function getTopHashtags(hashtags) {
+            if (!hashtags || hashtags.length === 0) return 'анализируйте описания ниже';
+            return hashtags.slice(0, 3).join(', ');
         }
 
         function showMessage(message, type) {
