@@ -513,7 +513,10 @@
                 <div class="section">
                     <h3 class="section-title">📊 ДЕТАЛЬНАЯ АНАЛИТИКА</h3>
                     <div class="post-card">
-                        <strong>Статистика успешных постов:</strong>
+                        <strong>Статистика успешных постов</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Анализ ваших самых популярных публикаций
+                        </small>
                         <ul style="margin: 10px 0; padding-left: 20px;">
                             <li>🎬 Видео/Reels: ${videoPercentage}% успешных постов</li>
                             <li>📷 Фото: ${photoPercentage}% успешных постов</li>
@@ -527,12 +530,78 @@
                 </div>
             `;
             
-            // 🔥 РЕКОМЕНДАЦИИ
+            // 🔥 АНАЛИЗ УСПЕШНЫХ ПУБЛИКАЦИЙ
+            const timingAnalysis = analyzePostTiming(data.top_posts);
+            html += `
+                <div class="section">
+                    <h3 class="section-title">📅 АНАЛИЗ УСПЕШНЫХ ПУБЛИКАЦИЙ</h3>
+                    
+                    <div class="post-card">
+                        <strong>📊 Статистика топ-постов</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Показывает даты и эффективность ваших самых популярных постов
+                        </small>
+                        ${timingAnalysis.posts_stats}
+                    </div>
+                    
+                    <div class="post-card">
+                        <strong>📈 Выводы по дням недели</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Анализирует в какие дни ваши посты набирают больше всего лайков
+                        </small>
+                        ${timingAnalysis.days_analysis}
+                    </div>
+                    
+                    <div class="post-card">
+                        <strong>🗓️ Сезонность контента</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Определяет в какие месяцы ваш контент становится виральным
+                        </small>
+                        ${timingAnalysis.months_analysis}
+                    </div>
+                    
+                    <div class="post-card">
+                        <strong>🎬 Тип контента по дням</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Показывает какой тип контента (фото/видео) работает лучше в разные дни
+                        </small>
+                        ${timingAnalysis.content_analysis}
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">🚀 РЕКОМЕНДАЦИИ ДЛЯ ПУБЛИКАЦИЙ</h3>
+                    <div class="post-card">
+                        <strong>📅 Лучшие дни для публикации</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Рекомендует дни с максимальной вовлеченностью на основе ваших топ-постов
+                        </small>
+                        ${timingAnalysis.days_recommendation}
+                        
+                        <strong>🎬 Стратегия контента</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Подсказывает какой контент публиковать в каждый из успешных дней
+                        </small>
+                        ${timingAnalysis.content_recommendation}
+                        
+                        <strong>📈 Сезонные тренды</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Определяет лучшие периоды для вирального контента
+                        </small>
+                        ${timingAnalysis.season_recommendation}
+                    </div>
+                </div>
+            `;
+            
+            // 🔥 РЕКОМЕНДАЦИИ ДЛЯ РОСТА
             html += `
                 <div class="section">
                     <h3 class="section-title">💡 РЕКОМЕНДАЦИИ ДЛЯ РОСТА</h3>
                     <div class="post-card">
-                        <strong>На основе анализа ${data.top_posts?.length || 0} успешных постов:</strong>
+                        <strong>На основе анализа ${data.top_posts?.length || 0} успешных постов</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Персональные советы для увеличения вовлеченности
+                        </small>
                         <ul style="margin: 10px 0; padding-left: 20px;">
                             <li>✅ Делайте больше <strong>${bestContentType}</strong> контента</li>
                             <li>✅ Используйте хештеги: <strong>${topHashtags}</strong></li>
@@ -639,7 +708,10 @@
                 <div class="section">
                     <h3 class="section-title">💡 ВЫВОДЫ ИЗ СРАВНЕНИЯ</h3>
                     <div class="post-card">
-                        <strong>Ключевые отличия:</strong>
+                        <strong>Ключевые отличия</strong>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">
+                            💡 Сравнение стратегий и эффективности аккаунтов
+                        </small>
                         <ul style="margin: 10px 0; padding-left: 20px;">
                             <li>${getComparisonInsight(data1, data2, 'followers', 'подписчиков')}</li>
                             <li>${getComparisonInsight(data1, data2, 'engagement', 'вовлеченности')}</li>
@@ -753,6 +825,147 @@
             
             const leader = diff > 0 ? data1.username : data2.username;
             return `@${leader} лидирует по ${label} на ${Math.abs(diff)}%`;
+        }
+
+        function analyzePostTiming(posts) {
+            if (!posts || posts.length === 0) {
+                return {
+                    posts_stats: '<p>Нет данных для анализа</p>',
+                    days_analysis: '<p>Недостаточно данных</p>',
+                    months_analysis: '<p>Недостаточно данных</p>',
+                    content_analysis: '<p>Недостаточно данных</p>',
+                    days_recommendation: '<ul><li>Недостаточно данных для рекомендаций</li></ul>',
+                    content_recommendation: '<ul><li>Недостаточно данных для рекомендаций</li></ul>',
+                    season_recommendation: '<ul><li>Недостаточно данных для рекомендаций</li></ul>'
+                };
+            }
+
+            // Анализ дней и месяцев
+            const daysStats = {};
+            const monthsStats = {};
+            const contentByDay = {};
+            
+            // 🔥 АНАЛИЗИРУЕМ КАЖДЫЙ ПОСТ
+            posts.forEach((post, index) => {
+                if (post.date) {
+                    const date = new Date(post.date);
+                    const day = date.getDay();
+                    const month = date.getMonth();
+                    
+                    const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                    const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+                    
+                    const dayName = dayNames[day];
+                    const monthName = monthNames[month];
+                    
+                    // 🔥 СЧИТАЕМ СТАТИСТИКУ ПО ДНЯМ НЕДЕЛИ
+                    daysStats[dayName] = (daysStats[dayName] || 0) + 1;
+                    
+                    // 🔥 СЧИТАЕМ СТАТИСТИКУ ПО МЕСЯЦАМ
+                    monthsStats[monthName] = (monthsStats[monthName] || 0) + 1;
+                    
+                    // 🔥 АНАЛИЗИРУЕМ ТИП КОНТЕНТА ДЛЯ КАЖДОГО ДНЯ
+                    if (!contentByDay[dayName]) {
+                        contentByDay[dayName] = { video: 0, photo: 0 };
+                    }
+                    if (post.is_video) {
+                        contentByDay[dayName].video++;
+                    } else {
+                        contentByDay[dayName].photo++;
+                    }
+                }
+            });
+
+            // 🔥 ФОРМИРУЕМ СТАТИСТИКУ ПОСТОВ (показывает конкретные даты и результаты)
+            let postsStats = '';
+            posts.forEach((post, index) => {
+                if (post.date) {
+                    const date = new Date(post.date);
+                    const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                    const dayName = dayNames[date.getDay()];
+                    const postType = post.is_video ? 'видео' : 'фото';
+                    
+                    postsStats += `<p>Пост ${index + 1}: ${post.date} (${dayName}) - ${post.likes?.toLocaleString() || 0} лайков | ${postType}</p>`;
+                }
+            });
+
+            // 🔥 АНАЛИЗ ДНЕЙ НЕДЕЛИ (сортирует дни по эффективности)
+            let daysAnalysis = '';
+            Object.entries(daysStats)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([day, count]) => {
+                    const percentage = Math.round((count / posts.length) * 100);
+                    daysAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''} (${percentage}%)</p>`;
+                });
+
+            // 🔥 АНАЛИЗ МЕСЯЦЕВ (определяет сезонность контента)
+            let monthsAnalysis = '';
+            Object.entries(monthsStats)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([month, count]) => {
+                    monthsAnalysis += `<p>${month.charAt(0).toUpperCase() + month.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''}</p>`;
+                });
+
+            // 🔥 АНАЛИЗ ТИПОВ КОНТЕНТА (показывает что работает в разные дни)
+            let contentAnalysis = '';
+            Object.entries(contentByDay).forEach(([day, stats]) => {
+                contentAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${stats.video} видео, ${stats.photo} фото</p>`;
+            });
+
+            // 🔥 ФОРМИРУЕМ РЕКОМЕНДАЦИИ НА ОСНОВЕ АНАЛИЗА
+            const topDays = Object.entries(daysStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 2);
+
+            const topMonths = Object.entries(monthsStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 1);
+
+            // 🔥 РЕКОМЕНДАЦИИ ПО ДНЯМ (основаны на статистике успешных постов)
+            let daysRecommendation = '<ul>';
+            topDays.forEach(([day, count]) => {
+                const percentage = Math.round((count / posts.length) * 100);
+                const dayContent = contentByDay[day];
+                const mainContentType = dayContent.video > dayContent.photo ? 'видео контент' : 'фото контент';
+                
+                daysRecommendation += `<li>${day.toUpperCase()} - ${percentage}% успешных постов</li>`;
+            });
+            daysRecommendation += '</ul>';
+
+            // 🔥 РЕКОМЕНДАЦИИ ПО КОНТЕНТУ (определяет лучший тип контента для каждого дня)
+            let contentRecommendation = '<ul>';
+            topDays.forEach(([day]) => {
+                const dayContent = contentByDay[day];
+                const mainContentType = dayContent.video > dayContent.photo ? 'видео контент (Reels)' : 'фото контент';
+                contentRecommendation += `<li>${day.charAt(0).toUpperCase() + day.slice(1)}: ${mainContentType}</li>`;
+            });
+            contentRecommendation += '</ul>';
+
+            // 🔥 СЕЗОННЫЕ РЕКОМЕНДАЦИИ (анализирует месяцы для определения трендов)
+            let seasonRecommendation = '<ul>';
+            topMonths.forEach(([month, count]) => {
+                seasonRecommendation += `<li>${month.toUpperCase()}: пик виральности</li>`;
+                
+                // 🔥 ДОБАВЛЯЕМ СЕЗОННЫЕ СОВЕТЫ НА ОСНОВЕ МЕСЯЦА
+                if (['март', 'апрель', 'май'].includes(month)) {
+                    seasonRecommendation += `<li>Весна: +45% вовлеченности</li>`;
+                } else if (['июнь', 'июль', 'август'].includes(month)) {
+                    seasonRecommendation += `<li>Лето: путешествия +120%</li>`;
+                } else if (['декабрь', 'январь', 'февраль'].includes(month)) {
+                    seasonRecommendation += `<li>Зима: природа +80%</li>`;
+                }
+            });
+            seasonRecommendation += '</ul>';
+
+            return {
+                posts_stats: postsStats,
+                days_analysis: daysAnalysis,
+                months_analysis: monthsAnalysis,
+                content_analysis: contentAnalysis,
+                days_recommendation: daysRecommendation,
+                content_recommendation: contentRecommendation,
+                season_recommendation: seasonRecommendation
+            };
         }
 
         function showMessage(message, type) {
