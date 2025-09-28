@@ -1,591 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EM HANDYMEN SOLUTIONS</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>InstaParser - Анализ Instagram</title>
     <style>
-        .before-after-container {
-            transition: all 0.3s ease;
-        }
-        .before-after-container:hover {
-            transform: translateY(-5px);
-        }
-        .form-input {
-            transition: all 0.3s ease;
-        }
-        .form-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-        }
-        .submit-btn {
-            background: linear-gradient(to right, #2563eb, #4f46e5);
-            transition: all 0.3s ease;
-        }
-        .submit-btn:hover {
-            background: linear-gradient(to right, #1d4ed8, #4338ca);
-            transform: translateY(-2px);
-        }
-        .service-card {
-            transition: all 0.3s ease;
-        }
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 30px; padding: 20px; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .analyzer-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 15px 20px; border: 2px solid #e1e1e1; border-radius: 10px; font-size: 16px; }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 16px; cursor: pointer; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .results { margin-top: 30px; }
+        .section { margin-bottom: 25px; }
+        .section-title { font-size: 1.5rem; color: #333; margin-bottom: 15px; }
+        .post-card { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .hashtag-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .hashtag { background: #e9ecef; padding: 8px 15px; border-radius: 20px; font-size: 14px; }
+        .loading { text-align: center; padding: 20px; display: none; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .stats { background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-    <!-- Header -->
-    <header class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-6">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                    </div>
-                    <h1 class="ml-3 text-2xl font-bold text-gray-900">EM HANDYMEN SOLUTIONS</h1>
-                </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-                    <a href="#services" class="text-gray-700 hover:text-blue-600 transition-colors">Services</a>
-                    <a href="#gallery" class="text-gray-700 hover:text-blue-600 transition-colors">Gallery</a>
-                    <a href="#contact" class="text-gray-700 hover:text-blue-600 transition-colors">Request</a>
-                </nav>
-            </div>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 InstaParser</h1>
+            <p>Анализ Instagram аккаунтов в реальном времени</p>
         </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-4xl md:text-6xl font-bold mb-6">Professional Handyman Services for Your Project</h2>
-            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Quality repair and finishing services. Fast, reliable, and affordable.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#contact" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg">
-                    Request Service
-                </a>
-                <a href="#gallery" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors">
-                    View Our Work
-                </a>
+        <div class="analyzer-card">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Введите Instagram username (без @)" value="instagram">
+                <button onclick="analyzeAccount()" id="analyzeBtn">Анализировать</button>
             </div>
-        </div>
-    </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Services</h3>
-                <p class="text-xl text-gray-600">A wide range of services to solve any repair and finishing tasks</p>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Получаем реальные данные из Instagram...</p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Painting</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Demolition</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Tile Installation</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Surface Preparation</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Room Renovation</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Painting Work</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Rough Work</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Finishing Work</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Furniture Assembly</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-                
-                <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 service-card">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Handyman Services</h4>
-                    <p class="text-gray-600">Professional service with quality guarantee. We use modern materials and technologies.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Work</h3>
-                <p class="text-xl text-gray-600">Before and After - Visible results of our work</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Painting</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Painting"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Painting"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Demolition</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Demolition"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1583847268964-d05f534225d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Demolition"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Tile Installation</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Tile Installation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1617804900364-32899b2120f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Tile Installation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Surface Preparation</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Surface Preparation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Surface Preparation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Room Renovation</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1583847268964-d05f534225d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Room Renovation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Room Renovation"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow before-after-container">
-                    <div class="p-6">
-                        <h4 class="text-xl font-semibold text-gray-900 mb-4 text-center">Painting Work</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Before:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1617804900364-32899b2120f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="Before Painting Work"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">After:</p>
-                                <img 
-                                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" 
-                                    alt="After Painting Work"
-                                    class="w-full h-48 object-cover rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="results" id="results"></div>
         </div>
-    </section>
-
-    <!-- Contact Form Section -->
-    <section id="contact" class="py-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-16">
-                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Submit a Request</h3>
-                <p class="text-xl text-gray-600">Fill out the form and our specialist will contact you shortly</p>
-            </div>
-            
-            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-                <div id="success-message" class="hidden text-center py-12">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-2">Request Submitted!</h4>
-                    <p class="text-gray-600">Our manager will contact you shortly.</p>
-                </div>
-                
-                <form id="request-form" class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                            Client Name *
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                            placeholder="Enter your name"
-                            required
-                        />
-                        <p id="name-error" class="mt-1 text-sm text-red-600 hidden">Please enter client name</p>
-                    </div>
-                    
-                    <div>
-                        <label for="task" class="block text-sm font-medium text-gray-700 mb-2">
-                            Task for Handyman *
-                        </label>
-                        <select
-                            id="task"
-                            name="task"
-                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                            required
-                        >
-                            <option value="">Select a task</option>
-                            <option value="Painting">Painting</option>
-                            <option value="Demolition">Demolition</option>
-                            <option value="Tile Installation">Tile Installation</option>
-                            <option value="Surface Preparation">Surface Preparation</option>
-                            <option value="Room Renovation">Room Renovation</option>
-                            <option value="Painting Work">Painting Work</option>
-                            <option value="Rough Work">Rough Work</option>
-                            <option value="Finishing Work">Finishing Work</option>
-                            <option value="Furniture Assembly">Furniture Assembly</option>
-                            <option value="Handyman Services">Handyman Services</option>
-                        </select>
-                        <p id="task-error" class="mt-1 text-sm text-red-600 hidden">Please select a task</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="date" class="block text-sm font-medium text-gray-700 mb-2">
-                                Arrival Date *
-                            </label>
-                            <input
-                                type="date"
-                                id="date"
-                                name="date"
-                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                required
-                            />
-                            <p id="date-error" class="mt-1 text-sm text-red-600 hidden">Please select a date</p>
-                        </div>
-                        
-                        <div>
-                            <label for="time" class="block text-sm font-medium text-gray-700 mb-2">
-                                Arrival Time *
-                            </label>
-                            <input
-                                type="time"
-                                id="time"
-                                name="time"
-                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                required
-                            />
-                            <p id="time-error" class="mt-1 text-sm text-red-600 hidden">Please select a time</p>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
-                            Property Address *
-                        </label>
-                        <input
-                            type="text"
-                            id="address"
-                            name="address"
-                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                            placeholder="Enter full address"
-                            required
-                        />
-                        <p id="address-error" class="mt-1 text-sm text-red-600 hidden">Please enter address</p>
-                    </div>
-                    
-                    <div class="pt-4">
-                        <button
-                            type="submit"
-                            class="submit-btn w-full text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-lg"
-                        >
-                            Submit Request
-                        </button>
-                        <p class="text-sm text-gray-500 mt-4 text-center">
-                            Request will be sent to zulfatbussines@outlook.com
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                        </div>
-                        <h3 class="ml-3 text-xl font-bold">EM HANDYMEN SOLUTIONS</h3>
-                    </div>
-                    <p class="text-gray-400">
-                        Professional handyman services for your projects. Quality, reliability, and affordable prices.
-                    </p>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
-                    <div class="space-y-2 text-gray-400">
-                        <p>📧 zulfatbussines@outlook.com</p>
-                        <p>📞 +7 (XXX) XXX-XX-XX</p>
-                        <p>🕒 Daily from 9:00 AM to 6:00 PM</p>
-                    </div>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Services</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>• Painting</li>
-                        <li>• Demolition</li>
-                        <li>• Tile Installation</li>
-                        <li>• Surface Preparation</li>
-                        <li>• Room Renovation</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; <span id="current-year">2023</span> EM HANDYMEN SOLUTIONS. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // Set current year
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        // Form validation and submission
-        document.getElementById('request-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Reset errors
-            document.querySelectorAll('.text-red-600').forEach(el => el.classList.add('hidden'));
-            
-            // Get form values
-            const name = document.getElementById('name').value.trim();
-            const task = document.getElementById('task').value;
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const address = document.getElementById('address').value.trim();
-            
-            // Validate form
-            let isValid = true;
-            
-            if (!name) {
-                document.getElementById('name-error').classList.remove('hidden');
-                isValid = false;
+        // 🔥 ЗАМЕНИ ЭТУ ССЫЛКУ НА СВОЮ ИЗ ШАГА 2
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/ТВОЙ_ИДЕНТИФИКАТОР/exec';
+
+        async function analyzeAccount() {
+            const username = document.getElementById('username').value.trim();
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+
+            if (!username) {
+                alert('Введите username Instagram');
+                return;
             }
-            
-            if (!task) {
-                document.getElementById('task-error').classList.remove('hidden');
-                isValid = false;
-            }
-            
-            if (!date) {
-                document.getElementById('date-error').classList.remove('hidden');
-                isValid = false;
-            }
-            
-            if (!time) {
-                document.getElementById('time-error').classList.remove('hidden');
-                isValid = false;
-            }
-            
-            if (!address) {
-                document.getElementById('address-error').classList.remove('hidden');
-                isValid = false;
-            }
-            
-            // If valid, show success message
-            if (isValid) {
-                document.getElementById('request-form').classList.add('hidden');
-                document.getElementById('success-message').classList.remove('hidden');
+
+            analyzeBtn.disabled = true;
+            loading.style.display = 'block';
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
                 
-                // In a real application, you would send the form data to a server here
-                console.log('Form submitted:', { name, task, date, time, address });
-                
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    document.getElementById('request-form').reset();
-                    document.getElementById('request-form').classList.remove('hidden');
-                    document.getElementById('success-message').classList.add('hidden');
-                }, 3000);
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                showError('Ошибка подключения: ' + error.message);
             }
+
+            analyzeBtn.disabled = false;
+            loading.style.display = 'none';
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            
+            let html = `
+                <div class="stats">
+                    <h2>📊 @${data.username}</h2>
+                    <p><strong>${data.full_name || ''}</strong></p>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <span>👥 ${data.followers.toLocaleString()} подписчиков</span>
+                        <span>📝 ${data.posts_count} постов</span>
+                        <span>🕒 ${data.analyzed_at}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Топ постов
+            html += `<div class="section"><h3 class="section-title">🎯 ТОП-5 ПОСТОВ ПО ЛАЙКАМ</h3>`;
+            data.top_posts.forEach((post, index) => {
+                const postType = post.is_video ? '🎬 REELS' : '📷 Фото';
+                html += `
+                    <div class="post-card">
+                        <strong>#${index + 1} | ${postType} | ❤️ ${post.likes.toLocaleString()} лайков | 💬 ${post.comments} комментов</strong>
+                        ${post.caption ? `<p style="margin-top: 8px; color: #555;">${post.caption}</p>` : ''}
+                        <small>📅 ${post.date}</small>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            // Хештеги
+            html += `<div class="section"><h3 class="section-title">🏷️ ПОПУЛЯРНЫЕ ХЕШТЕГИ</h3>`;
+            html += `<div class="hashtag-list">`;
+            data.popular_hashtags.forEach(tag => {
+                html += `<span class="hashtag">${tag}</span>`;
+            });
+            html += `</div></div>`;
+            
+            results.innerHTML = html;
+        }
+
+        function showError(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `
+                <div style="background: #ffebee; padding: 20px; border-radius: 10px;">
+                    <h3>❌ Ошибка</h3>
+                    <p>${message}</p>
+                    <p><strong>Попробуй:</strong></p>
+                    <ul>
+                        <li>Другой username (например: instagram, natgeo)</li>
+                        <li>Проверить что аккаунт публичный</li>
+                        <li>Обновить страницу через 2 минуты</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') analyzeAccount();
         });
     </script>
 </body>
