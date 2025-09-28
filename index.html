@@ -835,6 +835,7 @@
             return `@${leader} лидирует по ${label} на ${Math.abs(diff)}%`;
         }
 
+        // 🔥 ИСПРАВЛЕННАЯ ФУНКЦИЯ АНАЛИЗА ДАТ
         function analyzePostTiming(posts) {
             if (!posts || posts.length === 0) {
                 return {
@@ -848,36 +849,45 @@
                 };
             }
 
-            // Анализ дней и месяцев
             const daysStats = {};
             const monthsStats = {};
             const contentByDay = {};
             
+            // 🔥 ПРАВИЛЬНЫЙ АНАЛИЗ ДАТ
             posts.forEach((post, index) => {
                 if (post.date) {
                     try {
-                        const date = new Date(post.date);
-                        if (isNaN(date.getTime())) return;
+                        // Парсим дату из формата "23.09.2025"
+                        const [day, month, year] = post.date.split('.').map(Number);
                         
-                        const day = date.getDay();
-                        const month = date.getMonth();
-                        
-                        const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-                        const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
-                        
-                        const dayName = dayNames[day];
-                        const monthName = monthNames[month];
-                        
-                        daysStats[dayName] = (daysStats[dayName] || 0) + 1;
-                        monthsStats[monthName] = (monthsStats[monthName] || 0) + 1;
-                        
-                        if (!contentByDay[dayName]) {
-                            contentByDay[dayName] = { video: 0, photo: 0 };
-                        }
-                        if (post.is_video) {
-                            contentByDay[dayName].video++;
-                        } else {
-                            contentByDay[dayName].photo++;
+                        // Проверяем корректность даты
+                        if (day && month && year && month >= 1 && month <= 12) {
+                            const date = new Date(year, month - 1, day); // месяцы 0-11
+                            
+                            if (!isNaN(date.getTime())) {
+                                const dayOfWeek = date.getDay();
+                                const monthNum = date.getMonth();
+                                
+                                const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                                const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+                                
+                                const dayName = dayNames[dayOfWeek];
+                                const monthName = monthNames[monthNum];
+                                
+                                // Собираем статистику
+                                daysStats[dayName] = (daysStats[dayName] || 0) + 1;
+                                monthsStats[monthName] = (monthsStats[monthName] || 0) + 1;
+                                
+                                // Анализ контента по дням
+                                if (!contentByDay[dayName]) {
+                                    contentByDay[dayName] = { video: 0, photo: 0 };
+                                }
+                                if (post.is_video) {
+                                    contentByDay[dayName].video++;
+                                } else {
+                                    contentByDay[dayName].photo++;
+                                }
+                            }
                         }
                     } catch (e) {
                         console.log('Ошибка анализа даты:', e);
@@ -885,33 +895,40 @@
                 }
             });
 
-            // Формируем статистику постов
+            // 🔥 ФОРМИРУЕМ СТАТИСТИКУ ПОСТОВ С ПРАВИЛЬНЫМИ ДНЯМИ НЕДЕЛИ
             let postsStats = '';
             posts.forEach((post, index) => {
                 if (post.date) {
                     try {
-                        const date = new Date(post.date);
-                        const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-                        const dayName = dayNames[date.getDay()];
-                        const postType = post.is_video ? 'видео' : 'фото';
-                        
-                        postsStats += `<p>Пост ${index + 1}: ${post.date} (${dayName}) - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
+                        const [day, month, year] = post.date.split('.').map(Number);
+                        if (day && month && year && month >= 1 && month <= 12) {
+                            const date = new Date(year, month - 1, day);
+                            
+                            if (!isNaN(date.getTime())) {
+                                const dayNames = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+                                const dayName = dayNames[date.getDay()];
+                                const postType = post.is_video ? 'видео' : 'фото';
+                                
+                                postsStats += `<p>Пост ${index + 1}: ${post.date} (${dayName}) - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
+                            } else {
+                                const postType = post.is_video ? 'видео' : 'фото';
+                                postsStats += `<p>Пост ${index + 1}: ${post.date} - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
+                            }
+                        } else {
+                            const postType = post.is_video ? 'видео' : 'фото';
+                            postsStats += `<p>Пост ${index + 1}: ${post.date} - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
+                        }
                     } catch (e) {
-                        postsStats += `<p>Пост ${index + 1}: ${post.date} - ${(post.likes || 0).toLocaleString()} лайков</p>`;
+                        const postType = post.is_video ? 'видео' : 'фото';
+                        postsStats += `<p>Пост ${index + 1}: ${post.date} - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
                     }
                 } else {
-                    postsStats += `<p>Пост ${index + 1}: Дата неизвестна - ${(post.likes || 0).toLocaleString()} лайков</p>`;
+                    const postType = post.is_video ? 'видео' : 'фото';
+                    postsStats += `<p>Пост ${index + 1}: Дата неизвестна - ${(post.likes || 0).toLocaleString()} лайков | ${postType}</p>`;
                 }
             });
 
-            // Остальные функции анализа остаются без изменений...
-            // [код функций analyzePostTiming остается тем же, но с безопасными проверками]
-
-            return analyzePostTimingLogic(posts, daysStats, monthsStats, contentByDay, postsStats);
-        }
-
-        function analyzePostTimingLogic(posts, daysStats, monthsStats, contentByDay, postsStats) {
-            // Анализ дней
+            // 🔥 АНАЛИЗ ДНЕЙ НЕДЕЛИ
             let daysAnalysis = '';
             if (Object.keys(daysStats).length > 0) {
                 Object.entries(daysStats)
@@ -921,10 +938,10 @@
                         daysAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${count} топ-пост${count > 1 ? 'а' : ''} (${percentage}%)</p>`;
                     });
             } else {
-                daysAnalysis = '<p>Не удалось проанализировать дни</p>';
+                daysAnalysis = '<p>Не удалось проанализировать дни недели</p>';
             }
 
-            // Анализ месяцев
+            // 🔥 АНАЛИЗ МЕСЯЦЕВ (12 месяцев)
             let monthsAnalysis = '';
             if (Object.keys(monthsStats).length > 0) {
                 Object.entries(monthsStats)
@@ -936,17 +953,17 @@
                 monthsAnalysis = '<p>Не удалось проанализировать месяцы</p>';
             }
 
-            // Анализ контента по дням
+            // 🔥 АНАЛИЗ КОНТЕНТА ПО ДНЯМ
             let contentAnalysis = '';
             if (Object.keys(contentByDay).length > 0) {
                 Object.entries(contentByDay).forEach(([day, stats]) => {
                     contentAnalysis += `<p>${day.charAt(0).toUpperCase() + day.slice(1)}: ${stats.video} видео, ${stats.photo} фото</p>`;
                 });
             } else {
-                contentAnalysis = '<p>Не удалось проанализировать типы контента</p>';
+                contentAnalysis = '<p>Не удалось проанализировать типы контента по дням</p>';
             }
 
-            // Формируем рекомендации
+            // 🔥 РЕКОМЕНДАЦИИ
             const topDays = Object.entries(daysStats).sort((a, b) => b[1] - a[1]).slice(0, 2);
             const topMonths = Object.entries(monthsStats).sort((a, b) => b[1] - a[1]).slice(0, 1);
 
@@ -957,7 +974,8 @@
                     daysRecommendation += `<li>${day.toUpperCase()} - ${percentage}% успешных постов</li>`;
                 });
             } else {
-                daysRecommendation += '<li>Понедельник и пятница - универсальные дни</li>';
+                daysRecommendation += '<li>ПОНЕДЕЛЬНИК - лучший день для старта недели</li>';
+                daysRecommendation += '<li>ПЯТНИЦА - пик активности перед выходными</li>';
             }
             daysRecommendation += '</ul>';
 
@@ -969,7 +987,8 @@
                     contentRecommendation += `<li>${day.charAt(0).toUpperCase() + day.slice(1)}: ${mainContentType}</li>`;
                 });
             } else {
-                contentRecommendation += '<li>Видео контент: понедельник-пятница</li>';
+                contentRecommendation += '<li>Понедельник-среда: видео контент (Reels)</li>';
+                contentRecommendation += '<li>Четверг-воскресенье: фото контент</li>';
             }
             contentRecommendation += '</ul>';
 
@@ -978,16 +997,34 @@
                 topMonths.forEach(([month, count]) => {
                     seasonRecommendation += `<li>${month.toUpperCase()}: пик виральности</li>`;
                     
+                    // Сезонные советы для ВСЕХ 12 месяцев
                     if (['март', 'апрель', 'май'].includes(month)) {
                         seasonRecommendation += `<li>Весна: +45% вовлеченности</li>`;
                     } else if (['июнь', 'июль', 'август'].includes(month)) {
                         seasonRecommendation += `<li>Лето: путешествия +120%</li>`;
+                    } else if (['сентябрь', 'октябрь', 'ноябрь'].includes(month)) {
+                        seasonRecommendation += `<li>Осень: уютный контент +60%</li>`;
                     } else if (['декабрь', 'январь', 'февраль'].includes(month)) {
-                        seasonRecommendation += `<li>Зима: природа +80%</li>`;
+                        seasonRecommendation += `<li>Зима: праздничный контент +80%</li>`;
                     }
                 });
             } else {
-                seasonRecommendation += '<li>Апрель-май: лучший период для роста</li>';
+                // Универсальные рекомендации по сезонам
+                const currentMonth = new Date().getMonth();
+                const monthNames = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+                const currentMonthName = monthNames[currentMonth];
+                
+                seasonRecommendation += `<li>${currentMonthName.toUpperCase()}: тестируйте контент</li>`;
+                
+                if (currentMonth >= 2 && currentMonth <= 4) {
+                    seasonRecommendation += `<li>Весна: +45% вовлеченности</li>`;
+                } else if (currentMonth >= 5 && currentMonth <= 7) {
+                    seasonRecommendation += `<li>Лето: путешествия +120%</li>`;
+                } else if (currentMonth >= 8 && currentMonth <= 10) {
+                    seasonRecommendation += `<li>Осень: уютный контент +60%</li>`;
+                } else {
+                    seasonRecommendation += `<li>Зима: праздничный контент +80%</li>`;
+                }
             }
             seasonRecommendation += '</ul>';
 
